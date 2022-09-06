@@ -665,6 +665,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementSpeed: 10
+  _acceleration: 2.5
+  _deceleration: 5
   _axisInput: {x: 0, y: 0}
 --- !u!4 &1269823060
 Transform:
