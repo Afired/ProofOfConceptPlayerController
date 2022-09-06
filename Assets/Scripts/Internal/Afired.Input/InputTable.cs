@@ -37,6 +37,15 @@ namespace Afired.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Blink"",
+                    ""type"": ""Button"",
+                    ""id"": ""26630786-e2c1-4504-8dce-a09e6c568e52"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -94,6 +103,17 @@ namespace Afired.Input
                     ""action"": ""Walk"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""426c2945-fd33-4bc0-9129-b2fb7a452b66"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Blink"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -120,6 +140,7 @@ namespace Afired.Input
             // CharacterControls
             m_CharacterControls = asset.FindActionMap("CharacterControls", throwIfNotFound: true);
             m_CharacterControls_Walk = m_CharacterControls.FindAction("Walk", throwIfNotFound: true);
+            m_CharacterControls_Blink = m_CharacterControls.FindAction("Blink", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -180,11 +201,13 @@ namespace Afired.Input
         private readonly InputActionMap m_CharacterControls;
         private ICharacterControlsActions m_CharacterControlsActionsCallbackInterface;
         private readonly InputAction m_CharacterControls_Walk;
+        private readonly InputAction m_CharacterControls_Blink;
         public struct CharacterControlsActions
         {
             private @InputTable m_Wrapper;
             public CharacterControlsActions(@InputTable wrapper) { m_Wrapper = wrapper; }
             public InputAction @Walk => m_Wrapper.m_CharacterControls_Walk;
+            public InputAction @Blink => m_Wrapper.m_CharacterControls_Blink;
             public InputActionMap Get() { return m_Wrapper.m_CharacterControls; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -197,6 +220,9 @@ namespace Afired.Input
                     @Walk.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnWalk;
                     @Walk.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnWalk;
                     @Walk.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnWalk;
+                    @Blink.started -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnBlink;
+                    @Blink.performed -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnBlink;
+                    @Blink.canceled -= m_Wrapper.m_CharacterControlsActionsCallbackInterface.OnBlink;
                 }
                 m_Wrapper.m_CharacterControlsActionsCallbackInterface = instance;
                 if (instance != null)
@@ -204,6 +230,9 @@ namespace Afired.Input
                     @Walk.started += instance.OnWalk;
                     @Walk.performed += instance.OnWalk;
                     @Walk.canceled += instance.OnWalk;
+                    @Blink.started += instance.OnBlink;
+                    @Blink.performed += instance.OnBlink;
+                    @Blink.canceled += instance.OnBlink;
                 }
             }
         }
@@ -220,6 +249,7 @@ namespace Afired.Input
         public interface ICharacterControlsActions
         {
             void OnWalk(InputAction.CallbackContext context);
+            void OnBlink(InputAction.CallbackContext context);
         }
     }
 }

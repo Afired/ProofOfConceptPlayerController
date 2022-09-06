@@ -15,7 +15,7 @@ namespace Afired.Input {
         }
         
         private void Start() {
-            
+            _inputTable.CharacterControls.Blink.performed += _ => _isoCharacterController.GiveBlinkInput();
         }
         
         private void Update() {
