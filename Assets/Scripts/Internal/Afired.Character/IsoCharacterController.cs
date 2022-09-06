@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Afired.Character {
@@ -7,11 +6,14 @@ namespace Afired.Character {
     public class IsoCharacterController : MonoBehaviour {
         
         [Header("Settings")]
-        [SerializeField] private float _movementSpeed = 10f;
-        [SerializeField] private float _acceleration = 1f;
-        [SerializeField] private float _deceleration = 1f;
+        [SerializeField] private float _maxMovementSpeed = 10f;
+        [SerializeField] private AnimationCurve _accelerationCurve;
+        [SerializeField] [Tooltip("Time needed to accelerate from idle to max speed")] private float _accelerationTime = 0.5f;
+        [SerializeField] [Tooltip("Time needed to decelerate from max speed to idle")] private float _decelerationTime = 0.5f;
+        
         [Header("Input")]
         [SerializeField] private Vector2 _axisInput;
+        
         private Rigidbody _rigidbody;
         private Camera _camera;
         private float _accelerationLerp;
@@ -28,9 +30,9 @@ namespace Afired.Character {
         
         private void Update() {
             if(_axisInput.magnitude > 0)
-                _accelerationLerp += _acceleration * Time.deltaTime;
+                _accelerationLerp += 1 / _accelerationTime * Time.deltaTime;
             else
-                _accelerationLerp -= _deceleration * Time.deltaTime;
+                _accelerationLerp -= 1 / _decelerationTime * Time.deltaTime;
             
             _accelerationLerp = Mathf.Clamp01(_accelerationLerp);
         }
@@ -38,7 +40,8 @@ namespace Afired.Character {
         private void FixedUpdate() {
             if(_axisInput.magnitude > 0)
                 _moveDirection = Quaternion.Euler(0, _camera.transform.eulerAngles.y, 0) * new Vector3(_axisInput.x, 0, _axisInput.y);
-            transform.position += _moveDirection * (_movementSpeed * Time.fixedDeltaTime * _accelerationLerp);
+            float interpolatedMultiplier = _accelerationLerp == 0 ? 0 : _accelerationCurve.Evaluate(_accelerationLerp);
+            transform.position += _moveDirection * (_maxMovementSpeed * interpolatedMultiplier * Time.fixedDeltaTime);
         }
         
     }
