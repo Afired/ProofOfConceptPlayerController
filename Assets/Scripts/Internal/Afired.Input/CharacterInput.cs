@@ -1,8 +1,7 @@
-using System;
-using Afired.Input;
+using Afired.Character;
 using UnityEngine;
 
-namespace Afired.Character {
+namespace Afired.Input {
     
     [RequireComponent(typeof(IsoCharacterController))]
     public class CharacterInput : MonoBehaviour {
