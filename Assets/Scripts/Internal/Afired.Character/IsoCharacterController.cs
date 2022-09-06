@@ -49,6 +49,10 @@ namespace Afired.Character {
             UpdateAnimation();
         }
         
+        private void FixedUpdate() {
+            Move();
+        }
+        
         private void UpdateAcceleration() {
             if(_axisInput.magnitude > 0)
                 _accelerationLerp += 1 / _accelerationTime * Time.deltaTime;
@@ -67,18 +71,18 @@ namespace Afired.Character {
             _characterSpriteRenderer.flipX = _currentAxisMovement.x < 0;
         }
         
-        private void FixedUpdate() {
+        private void Move() {
             if(_axisInput.magnitude > 0)
                 _moveDirection = Quaternion.Euler(0, _camera.transform.eulerAngles.y, 0) * new Vector3(_axisInput.x, 0, _axisInput.y);
             float interpolatedMultiplier = _accelerationLerp == 0 ? 0 : _accelerationCurve.Evaluate(_accelerationLerp);
             _currentAxisMovement = _moveDirection *_maxMovementSpeed * interpolatedMultiplier;
-            transform.position += _currentAxisMovement * Time.fixedDeltaTime;
+            _rigidbody.MovePosition(_rigidbody.position + _currentAxisMovement * Time.fixedDeltaTime);
         }
         
         private void Blink() {
-            Instantiate(_blinkParticlePrefab, transform.position, Quaternion.identity);
+            Instantiate(_blinkParticlePrefab, transform.position, Quaternion.identity); // spawn vfx at old position
             transform.position += _moveDirection * _blinkRange;
-            Instantiate(_blinkParticlePrefab, transform.position, Quaternion.identity);
+            Instantiate(_blinkParticlePrefab, transform.position, Quaternion.identity); // spawn vfx at new position
             _currentBlinkCooldown = _blinkCooldown;
         }
         
